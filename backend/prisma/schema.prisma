@@ -13,3 +13,74 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id          Int           @id @default(autoincrement())
+  name        String
+  email       String        @unique
+  password    String
+  role        Role          @default(CLIENT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  appointments Appointment[]  @relation("ClientAppointments")
+  barber       Barber?
+}
+
+model Barber {
+  id            Int          @id @default(autoincrement())
+  userId        Int          @unique
+  isActive      Boolean      @default(true)
+
+  user          User          @relation(fields: [userId], references: [id])
+  availabilities Availability[]
+  appointments   Appointment[] @relation("BarberAppointments")
+}
+
+model Service {
+  id           Int           @id @default(autoincrement())
+  name         String
+  duration     Int            // minutos
+  price        Float
+  isActive     Boolean        @default(true)
+
+  appointments Appointment[]  // Relación implícita many-to-many
+}
+
+model Appointment {
+  id             Int          @id @default(autoincrement())
+  clientId       Int
+  barberId       Int?
+  date           DateTime
+  startTime      DateTime
+  endTime        DateTime
+  status         AppointmentStatus @default(BOOKED)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  client         User          @relation("ClientAppointments", fields: [clientId], references: [id])
+  barber         Barber?       @relation("BarberAppointments", fields: [barberId], references: [id])
+  services       Service[]     
+}
+
+model Availability {
+  id            Int          @id @default(autoincrement())
+  barberId      Int
+  weekday       Int          // 0 = Domingo ... 6 = Sábado
+  startHour     String       // "09:00"
+  endHour       String       // "17:00"
+
+  barber        Barber        @relation(fields: [barberId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  BARBER
+  CLIENT
+}
+
+enum AppointmentStatus {
+  BOOKED
+  CANCELLED
+  COMPLETED
+}
