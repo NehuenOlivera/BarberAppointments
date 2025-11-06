@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",                // versión de JS generada
+    "module": "CommonJS",              // compatible con Node + Express
+    "rootDir": "./src",                 // carpeta con tu código fuente
+    "outDir": "./dist",                 // carpeta de compilación
+    "esModuleInterop": true,            // permite import express from "express"
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,                     // todas las reglas estrictas de TS
+    "skipLibCheck": true,               // ignora errores de librerías externas
+    "types": ["node"],                  // tipos de Node disponibles
+    "resolveJsonModule": true,          // permite importar JSON
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src/**/*"],              // solo compila archivos en src
+  "exclude": ["node_modules", "prisma"] // ignora node_modules y Prisma generado
+}
