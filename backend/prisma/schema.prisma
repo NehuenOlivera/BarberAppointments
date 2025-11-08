@@ -5,8 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -40,6 +39,7 @@ model Barber {
 model Service {
   id           Int           @id @default(autoincrement())
   name         String
+  description  String
   duration     Int            // minutos
   price        Float
   isActive     Boolean        @default(true)
