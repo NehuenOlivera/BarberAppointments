@@ -40,11 +40,11 @@ model Service {
   id           Int           @id @default(autoincrement())
   name         String
   description  String
-  duration     Int            // minutos
+  duration     Int            // minutes
   price        Float
   isActive     Boolean        @default(true)
 
-  appointments Appointment[]  // Relación implícita many-to-many
+  appointments Appointment[]  // Implicit many-to-many relationship
 }
 
 model Appointment {
@@ -66,7 +66,7 @@ model Appointment {
 model Availability {
   id            Int          @id @default(autoincrement())
   barberId      Int
-  weekday       Int          // 0 = Domingo ... 6 = Sábado
+  weekday       Int          // 0 = Sunday ... 6 = Saturday
   startHour     String       // "09:00"
   endHour       String       // "17:00"
 

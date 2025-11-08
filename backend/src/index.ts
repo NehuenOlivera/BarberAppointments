@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import serviceRoutes from "./routes/services";
+import userRoutes from "./routes/users";
 //import { PrismaClient } from "@prisma/client";
 
 dotenv.config();
@@ -11,6 +12,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/services", serviceRoutes);
+app.use("/users", userRoutes);
 
 app.get("/", (_req, res) => {
   res.send("Barber Appointments API is running 🚀");

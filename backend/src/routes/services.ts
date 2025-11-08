@@ -80,7 +80,7 @@ router.put("/:id", async (req, res) => {
   } catch (error: any) {
     console.error(error);
     if (error.code === "P2025") {
-      // Prisma error cuando no encuentra el registro
+      // Prisma error when record is not found
       return res.status(404).json({ error: "Service not found" });
     }
     res.status(500).json({ error: "Error updating the service" });
