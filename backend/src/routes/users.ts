@@ -128,30 +128,72 @@ router.post("/register-barber", authenticateJWT, isAdmin, async (req, res) => {
 });
 
 // Get single barber by id
-router.get("/barber/:id", authenticateJWT, isAdmin, async (req, res) => {
+router.get("/barbers/:id", authenticateJWT, isAdmin, async (req, res) => {
+  const barberId = parseInt(req.params.id, 10);
+
+  if (isNaN(barberId)) {
+    return res.status(400).json({ message: "Invalid barber ID" });
+  }
+
   try {
-    const { id } = req.params;
     const barber = await prisma.barber.findUnique({
-      where: { id: parseInt(id) }
+      where: { id: barberId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+          },
+        },
+        availabilities: true,
+        appointments: {
+          include: {
+            client: {
+              select: { id: true, name: true, email: true },
+            },
+            services: true,
+          },
+        },
+      },
     });
+
     if (!barber) {
-      return res.status(404).json({ error: "Barber not found" });
+      return res.status(404).json({ message: "Barber not found" });
     }
-    res.json(barber);
+
+    res.status(200).json(barber);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error getting barber" });
+    console.error("Error fetching barber:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
 // Get all barbers
 router.get("/barbers", authenticateJWT, isAdmin, async (_req, res) => {
   try {
-    const barbers = await prisma.barber.findMany();
-    res.json(barbers);
+    const barbers = await prisma.barber.findMany({
+      where: {
+        isActive: true,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+          },
+        },
+        availabilities: true,
+      },
+    });
+
+    res.status(200).json(barbers);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error getting barbers" });
+    console.error("Error fetching barbers:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
