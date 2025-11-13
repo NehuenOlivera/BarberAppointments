@@ -127,4 +127,32 @@ router.post("/register-barber", authenticateJWT, isAdmin, async (req, res) => {
     }
 });
 
+// Get single barber by id
+router.get("/barber/:id", authenticateJWT, isAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const barber = await prisma.barber.findUnique({
+      where: { id: parseInt(id) }
+    });
+    if (!barber) {
+      return res.status(404).json({ error: "Barber not found" });
+    }
+    res.json(barber);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error getting barber" });
+  }
+});
+
+// Get all barbers
+router.get("/barbers", authenticateJWT, isAdmin, async (_req, res) => {
+  try {
+    const barbers = await prisma.barber.findMany();
+    res.json(barbers);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error getting barbers" });
+  }
+});
+
 export default router;
